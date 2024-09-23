@@ -3,7 +3,8 @@ import * as winston from 'winston';
 
 import 'winston-daily-rotate-file';
 
-export const winstonOptions: WinstonModuleOptions = {  transports: [
+export const winstonOptions: WinstonModuleOptions = {
+  transports: [
     // 콘솔로 로그를 출력하는 설정
     new winston.transports.Console({
       format: winston.format.combine(
