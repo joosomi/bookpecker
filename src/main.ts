@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
@@ -24,7 +25,9 @@ const bootstrap = async (): Promise<void> => {
   app.useGlobalFilters(new GlobalExceptionsFilter(logger));
   app.useLogger(logger);
 
-  await app.listen(3000);
+  const configService = app.get(ConfigService);
+  const port = configService.get<number>('APP_PORT', 3000);
+  await app.listen(port);
 };
 
 bootstrap();
