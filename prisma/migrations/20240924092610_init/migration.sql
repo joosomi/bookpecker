@@ -16,7 +16,7 @@ CREATE TABLE "Book" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "author" TEXT NOT NULL,
-    "isbn" TEXT NOT NULL,
+    "isbn" TEXT,
     "publisher" TEXT,
     "publishedDate" TIMESTAMP(3),
     "description" TEXT,
@@ -33,7 +33,7 @@ CREATE TABLE "UserBook" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "bookId" TEXT NOT NULL,
-    "like" BOOLEAN NOT NULL,
+    "isLiked" BOOLEAN NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -47,7 +47,6 @@ CREATE TABLE "Note" (
     "userId" TEXT NOT NULL,
     "bookId" TEXT NOT NULL,
     "content" TEXT NOT NULL,
-    "isDeleted" BOOLEAN NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -60,9 +59,6 @@ CREATE UNIQUE INDEX "User_kakaoId_key" ON "User"("kakaoId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Book_isbn_key" ON "Book"("isbn");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserBook_userId_bookId_key" ON "UserBook"("userId", "bookId");
