@@ -4,6 +4,7 @@ import { WinstonModule } from 'nest-winston';
 
 import { OauthController } from './feature/rest/oauth/oauth.controller';
 import { OAuthModule } from './feature/rest/oauth/oauth.module';
+import { OAuthService } from './feature/rest/oauth/oauth.service';
 import { winstonOptions } from './logging/logger';
 import { PrismaModule } from './prisma/prisma.module';
 
@@ -17,6 +18,6 @@ import { PrismaModule } from './prisma/prisma.module';
     OAuthModule,
   ],
   controllers: [OauthController],
-  providers: [],
+  providers: [OAuthService],
 })
 export class AppModule {}
