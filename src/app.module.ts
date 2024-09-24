@@ -2,9 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 
-import { OauthController } from './feature/rest/oauth/oauth.controller';
 import { OAuthModule } from './feature/rest/oauth/oauth.module';
-import { OAuthService } from './feature/rest/oauth/oauth.service';
 import { winstonOptions } from './logging/logger';
 import { PrismaModule } from './prisma/prisma.module';
 
@@ -17,7 +15,7 @@ import { PrismaModule } from './prisma/prisma.module';
     PrismaModule,
     OAuthModule,
   ],
-  controllers: [OauthController],
-  providers: [OAuthService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
