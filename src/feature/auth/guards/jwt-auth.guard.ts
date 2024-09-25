@@ -3,8 +3,8 @@ import { Reflector } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { Observable } from 'rxjs';
 
-import { AuthInfo, JwtUser } from '../types/jwt.type';
 import { IsPublicKey } from '../decorators/public.decorator';
+import { AuthInfo, JwtUser } from '../types/jwt.type';
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard('jwt') {
