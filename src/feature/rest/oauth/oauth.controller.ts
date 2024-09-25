@@ -2,6 +2,8 @@ import { Controller, Get, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiTags } from '@nestjs/swagger';
 
+import { Public } from '../../auth/decorators/public.decorator';
+
 import { OAuthService } from './oauth.service';
 
 @ApiTags('OAuth Controller')
@@ -13,7 +15,9 @@ export class OAuthController {
    * Passport의 Kakao Strategy를 사용하여
    * 카카오 로그인 페이지로 사용자를 리다이렉트
    */
+
   @Get('kakao')
+  @Public()
   @UseGuards(AuthGuard('kakao'))
   async kakaoAuth(): Promise<void> {
     // AuthGuard가 카카오 로그인 페이지로 리다이렉트
@@ -25,6 +29,7 @@ export class OAuthController {
    * @returns JWT 액세스 토큰
    */
   @Get('kakao/callback')
+  @Public()
   @UseGuards(AuthGuard('kakao'))
   kakaoAuthCallback(@Req() req: Request): { accessToken: string } {
     const token = req['user'];

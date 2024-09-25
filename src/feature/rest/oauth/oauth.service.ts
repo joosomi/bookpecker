@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { PrismaService } from '../../../prisma/prisma.service';
+import { JwtPayload } from '../../auth/types/jwt.type';
 
 @Injectable()
 export class OAuthService {
@@ -39,7 +40,7 @@ export class OAuthService {
     }
 
     // JWT 토큰 생성
-    const payload = { sub: user.id, email: user.email, username: user.username };
+    const payload: JwtPayload = { sub: user.id, email: user.email, username: user.username };
     const accessToken = this.jwtService.sign(payload);
 
     return { accessToken };

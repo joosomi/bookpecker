@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
 import { WinstonModule } from 'nest-winston';
 
+import { AuthModule } from './feature/auth/auth.module';
+import { JwtAuthGuard } from './feature/auth/guards/jwt-auth.guard';
 import { OAuthModule } from './feature/rest/oauth/oauth.module';
 import { winstonOptions } from './logging/logger';
 import { PrismaModule } from './prisma/prisma.module';
@@ -14,8 +17,14 @@ import { PrismaModule } from './prisma/prisma.module';
     }),
     PrismaModule,
     OAuthModule,
+    AuthModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+  ],
 })
 export class AppModule {}
