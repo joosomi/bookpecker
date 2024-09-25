@@ -26,12 +26,13 @@ model User {
 model Book {
   id            String    @id @default(uuid())
   title         String
-  author        String
-  isbn          String?
-  publisher     String?
-  publishedDate DateTime?
-  description   String?
-  thumbnail     String?
+  author        String 
+  isbn          String    @unique
+  link          String?   
+  publisher     String?    
+  pubDate       DateTime? @db.Date     // 출판일: 날짜만 저장 (시간 정보 제외)
+  description   String?   @db.Text
+  imageUrl      String?   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   deletedAt     DateTime?
@@ -58,7 +59,7 @@ model Note {
   id         String    @id @default(uuid())
   userId     String
   bookId     String
-  content    String
+  content    String    @db.Text
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
   deletedAt  DateTime?

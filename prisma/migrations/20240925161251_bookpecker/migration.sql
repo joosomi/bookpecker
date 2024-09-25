@@ -16,11 +16,12 @@ CREATE TABLE "Book" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "author" TEXT NOT NULL,
-    "isbn" TEXT,
+    "isbn" TEXT NOT NULL,
+    "link" TEXT,
     "publisher" TEXT,
-    "publishedDate" TIMESTAMP(3),
+    "pubDate" DATE,
     "description" TEXT,
-    "thumbnail" TEXT,
+    "imageUrl" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "deletedAt" TIMESTAMP(3),
@@ -59,6 +60,9 @@ CREATE UNIQUE INDEX "User_kakaoId_key" ON "User"("kakaoId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Book_isbn_key" ON "Book"("isbn");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserBook_userId_bookId_key" ON "UserBook"("userId", "bookId");
