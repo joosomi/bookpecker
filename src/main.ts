@@ -22,7 +22,17 @@ const bootstrap = async (): Promise<void> => {
     .setTitle('Bookpecker API')
     .setDescription('Bookpecker 서비스의 API의 명세서입니다.')
     .setVersion('1.0')
-    .addBearerAuth()
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'access_token',
+        description: 'Enter your access token',
+        in: 'header',
+      },
+      'access_token',
+    )
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

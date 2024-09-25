@@ -5,6 +5,7 @@ import { WinstonModule } from 'nest-winston';
 
 import { AuthModule } from './feature/auth/auth.module';
 import { JwtAuthGuard } from './feature/auth/guards/jwt-auth.guard';
+import { BookSearchModule } from './feature/common/book-search/book-search.module';
 import { OAuthModule } from './feature/rest/oauth/oauth.module';
 import { winstonOptions } from './logging/logger';
 import { PrismaModule } from './prisma/prisma.module';
@@ -18,6 +19,7 @@ import { PrismaModule } from './prisma/prisma.module';
     PrismaModule,
     OAuthModule,
     AuthModule,
+    BookSearchModule,
   ],
   controllers: [],
   providers: [
