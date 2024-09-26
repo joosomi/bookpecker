@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Book } from '@prisma/client';
 
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -10,6 +10,11 @@ import { SaveBookInput } from './dto/save-book.input';
 export class BookService {
   constructor(private readonly prisma: PrismaService) {}
 
+  /**
+   * 모든 책 조회
+   * 데이터베이스에 저장된 모든 책 목록을 반환합니다. Book Table
+   * @returns 모든 책의 배열
+   */
   async findAll(): Promise<Book[]> {
     return this.prisma.book.findMany(); // 모든 책을 반환하는 메서드
   }
@@ -64,6 +69,12 @@ export class BookService {
     return book;
   }
 
+  /**
+   * 문자열로 된 날짜를 Date 객체로 변환하는 메서드
+   *
+   * @param dateString - YYYYMMDD 형식의 문자열 날짜
+   * @returns 변환된 Date 객체 또는 유효하지 않은 경우 undefined
+   */
   private parseDateString(dateString: string): Date | undefined {
     if (!dateString) return undefined;
 
@@ -73,5 +84,35 @@ export class BookService {
 
     const date = new Date(year, month, day);
     return isNaN(date.getTime()) ? undefined : date;
+  }
+
+  /**
+   * 책 좋아요 토글 기능
+   * @throws NotFoundException - 해당 책이 사용자에게 저장되지 않았을 경우
+   */
+  async toggleLike(userId: string, bookId: string): Promise<boolean> {
+    const userBook = await this.prisma.userBook.findUnique({
+      where: {
+        userId_bookId: {
+          userId,
+          bookId,
+        },
+      },
+    });
+
+    if (!userBook) {
+      throw new NotFoundException('해당 책을 찾을 수 없거나 저장되지 않은 책입니다.');
+    }
+
+    const updatedUserBook = await this.prisma.userBook.update({
+      where: {
+        id: userBook.id,
+      },
+      data: {
+        isLiked: !userBook.isLiked,
+      },
+    });
+
+    return updatedUserBook.isLiked;
   }
 }

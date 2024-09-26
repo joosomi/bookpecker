@@ -3,6 +3,7 @@ import { Resolver, Mutation, Args, Context, Query } from '@nestjs/graphql';
 
 import { BookService } from './book.service';
 import { SaveBookInput } from './dto/save-book.input';
+import { ToggleLikeInput } from './dto/toggle-like.input';
 import { Book } from './models/book.model';
 
 @Resolver(() => Book)
@@ -35,5 +36,25 @@ export class BookResolver {
     } catch (err) {
       throw new Error('책을 저장하는 중 오류가 발생했습니다.');
     }
+  }
+
+  /**
+   * 책 좋아요 토글 기능
+   * 이미 좋아요를 눌렀다면 취소, 아직 좋아요를 누르지 않았다면 좋아요 true
+   * @param input ToggleLikeInput DTO - bookId
+   * @param context GraphQL 요청 컨텍스트 (JWT 인증된 사용자 정보 포함)
+   * @returns 좋아요 상태 변경된 결과 (true/false)
+   */
+  @Mutation(() => Boolean)
+  async toggleLike(@Args('input') input: ToggleLikeInput, @Context() context): Promise<boolean> {
+    const userId = context.req.user.id;
+
+    if (!userId) {
+      throw new Error('사용자 ID를 찾을 수 없습니다.');
+    }
+    if (!input.bookId) {
+      throw new Error('책 ID가 제공되지 않았습니다.');
+    }
+    return this.bookService.toggleLike(userId, input.bookId);
   }
 }

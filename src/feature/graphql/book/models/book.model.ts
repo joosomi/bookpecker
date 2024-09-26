@@ -37,4 +37,7 @@ export class Book {
 
   @Field({ nullable: true })
   deletedAt?: Date;
+
+  @Field({ nullable: true })
+  isLiked?: boolean;
 }
