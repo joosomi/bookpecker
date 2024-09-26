@@ -11,59 +11,60 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  kakaoId    String   @unique
-  email      String   @unique
-  username   String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  deletedAt  DateTime?
-  
-  userBooks  UserBook[]
-  notes      Note[]
+  id        String    @id @default(uuid())
+  kakaoId   String    @unique
+  email     String    @unique
+  username  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  userBooks UserBook[]
+  notes     Note[]
 }
 
 model Book {
-  id            String    @id @default(uuid())
-  title         String
-  author        String 
-  isbn          String    @unique
-  link          String?   
-  publisher     String?    
-  pubDate       DateTime? @db.Date     // 출판일: 날짜만 저장 (시간 정보 제외)
-  description   String?   @db.Text
-  imageUrl      String?   
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  deletedAt     DateTime?
-  
-  userBooks     UserBook[]
-  notes         Note[]
+  id          String    @id @default(uuid())
+  title       String
+  author      String
+  isbn        String    @unique
+  link        String?
+  publisher   String?
+  pubDate     DateTime? @db.Date // 출판일: 날짜만 저장 (시간 정보 제외)
+  description String?   @db.Text
+  imageUrl    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+
+  userBooks UserBook[]
+  notes     Note[]
 }
 
 model UserBook {
-  id         String   @id @default(uuid())
-  userId     String
-  bookId     String
-  isLiked       Boolean
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  deletedAt  DateTime?
-  
-  user       User     @relation(fields: [userId], references: [id])
-  book       Book     @relation(fields: [bookId], references: [id])
+  id        String    @id @default(uuid())
+  userId    String
+  bookId    String
+  isLiked   Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+  book Book @relation(fields: [bookId], references: [id])
+
   @@unique([userId, bookId])
 }
 
 model Note {
-  id         String    @id @default(uuid())
-  userId     String
-  bookId     String
-  content    String    @db.Text
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  deletedAt  DateTime?
-  
-  user       User      @relation(fields: [userId], references: [id])
-  book       Book      @relation(fields: [bookId], references: [id])
+  id        String    @id @default(uuid())
+  userId    String
+  bookId    String
+  content   String    @db.Text
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id])
+  book Book @relation(fields: [bookId], references: [id])
 }
