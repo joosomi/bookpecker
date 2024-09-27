@@ -10,6 +10,7 @@ import { JwtAuthGuard } from './feature/auth/guards/jwt-auth.guard';
 import { BookSearchModule } from './feature/common/book-search/book-search.module';
 import { BookModule } from './feature/graphql/book/book.module';
 import { OAuthModule } from './feature/rest/oauth/oauth.module';
+import { ShareBookModule } from './feature/rest/share-book/share-book.module';
 import { winstonOptions } from './logging/logger';
 import { PrismaModule } from './prisma/prisma.module';
 
@@ -30,6 +31,7 @@ import { PrismaModule } from './prisma/prisma.module';
     AuthModule,
     BookSearchModule,
     BookModule,
+    ShareBookModule,
   ],
   controllers: [],
   providers: [
