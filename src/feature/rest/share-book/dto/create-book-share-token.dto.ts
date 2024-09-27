@@ -4,7 +4,7 @@ import { IsNotEmpty, IsUUID } from 'class-validator';
 export class CreateBookSharTokenDto {
   @ApiProperty({
     description: '외부 공유할 책의 ID(uuid)',
-    example: '123e4567-e89b-12d3-a456-426614174000', // 예시 UUID
+    example: '5f083d79-a2f0-47d4-9113-de78e88ee3e4', // 예시 UUID
     required: true,
   })
   @IsUUID()
