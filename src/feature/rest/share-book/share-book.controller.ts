@@ -58,7 +58,7 @@ export class ShareBookController {
   })
   @ApiResponse({
     status: 404,
-    description: '공유된 책의 정보를 찾을 수 없는 경우',
+    description: '공유된 책의 정보를 찾을 수 없거나 사용자가 해당 책을 저장하지 않은 경우',
     schema: {
       example: {
         statusCode: 404,
