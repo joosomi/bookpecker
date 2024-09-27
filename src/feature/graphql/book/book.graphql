@@ -1,0 +1,37 @@
+type Book {
+  id: ID!
+  title: String!
+  author: String!
+  isbn: String!
+  link: String
+  publisher: String
+  pubDate: String
+  description: String
+  imageUrl: String
+
+  isLiked: Boolean
+}
+
+input SaveBookInput {
+  title: String!
+  author: String!
+  isbn: String!
+  link: String
+  publisher: String
+  pubDate: String
+  description: String
+  imageUrl: String
+}
+
+input ToggleLikeInput {
+  bookId: ID!
+}
+
+type Query {
+  getAllBooks: [Book!]!
+}
+
+type Mutation {
+  saveBook(input: SaveBookInput!): Book!
+  toggleLike(input: ToggleLikeInput!): Boolean!
+}

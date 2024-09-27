@@ -1,3 +1,5 @@
+import { join } from 'path';
+
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
@@ -18,9 +20,14 @@ import { PrismaModule } from './prisma/prisma.module';
   imports: [
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: true,
+      autoSchemaFile: false, //Code-First에서는 true
+      typePaths: ['./**/*.graphql'],
+      definitions: {
+        path: join(process.cwd(), 'src/graphql.ts'),
+        outputAs: 'class',
+      },
       context: ({ req }) => ({ req }), // 요청 객체를 컨텍스트에 전달하여 인증 가드에서 사용
-      // playground: true, // GraphQL Playground 활성화
+      playground: true, // GraphQL Playground 활성화
     }),
     WinstonModule.forRoot(winstonOptions),
     ConfigModule.forRoot({
