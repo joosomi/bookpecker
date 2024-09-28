@@ -1,0 +1,31 @@
+type User {
+  id: ID!
+}
+
+type Note {
+  id: ID!
+  content: String!
+  book: Book!
+  user: User!
+}
+
+type Book {
+  id: ID!
+  title: String!
+  author: String!
+  isbn: String!
+  link: String
+  publisher: String
+  pubDate: String
+  description: String
+  imageUrl: String
+}
+
+input CreateNoteInput {
+  bookId: ID!
+  content: String!
+}
+
+type Mutation {
+  createNote(input: CreateNoteInput!): Note!
+}

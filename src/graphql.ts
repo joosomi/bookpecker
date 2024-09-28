@@ -23,6 +23,11 @@ export class ToggleLikeInput {
     bookId: string;
 }
 
+export class CreateNoteInput {
+    bookId: string;
+    content: string;
+}
+
 export class Book {
     id: string;
     title: string;
@@ -44,6 +49,19 @@ export abstract class IMutation {
     abstract saveBook(input: SaveBookInput): Book | Promise<Book>;
 
     abstract toggleLike(input: ToggleLikeInput): boolean | Promise<boolean>;
+
+    abstract createNote(input: CreateNoteInput): Note | Promise<Note>;
+}
+
+export class User {
+    id: string;
+}
+
+export class Note {
+    id: string;
+    content: string;
+    book: Book;
+    user: User;
 }
 
 type Nullable<T> = T | null;

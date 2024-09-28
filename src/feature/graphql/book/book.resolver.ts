@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { ExecutionContext } from '@nestjs/common';
+import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { Resolver, Mutation, Args, Context, Query } from '@nestjs/graphql';
 import { Book } from '@prisma/client';
 
@@ -31,11 +31,10 @@ export class BookResolver {
     try {
       const userId = context.req.user.id;
       if (!userId) {
-        throw new Error('사용자 ID를 찾을 수 없습니다.');
+        throw new UnauthorizedException('사용자 인증이 필요합니다.');
       }
       return await this.bookService.saveBook(input, userId);
     } catch (err) {
-      console.error('책 저장 중 오류 발생:', err);
       throw new Error('책을 저장하는 중 오류가 발생했습니다.');
     }
   }
@@ -51,10 +50,10 @@ export class BookResolver {
   async toggleLike(@Args('input') input: ToggleLikeInput, @Context() context): Promise<boolean> {
     const userId = context.req.user.id;
     if (!userId) {
-      throw new Error('사용자 ID를 찾을 수 없습니다.');
+      throw new UnauthorizedException('사용자 인증이 필요합니다.');
     }
     if (!input.bookId) {
-      throw new Error('책 ID가 제공되지 않았습니다.');
+      throw new BadRequestException('책 ID가 제공되지 않았습니다.');
     }
     return this.bookService.toggleLike(userId, input.bookId);
   }

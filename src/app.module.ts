@@ -11,6 +11,7 @@ import { AuthModule } from './feature/auth/auth.module';
 import { JwtAuthGuard } from './feature/auth/guards/jwt-auth.guard';
 import { BookSearchModule } from './feature/common/book-search/book-search.module';
 import { BookModule } from './feature/graphql/book/book.module';
+import { NoteModule } from './feature/graphql/note/note.module';
 import { OAuthModule } from './feature/rest/oauth/oauth.module';
 import { ShareBookModule } from './feature/rest/share-book/share-book.module';
 import { winstonOptions } from './logging/logger';
@@ -26,8 +27,11 @@ import { PrismaModule } from './prisma/prisma.module';
         path: join(process.cwd(), 'src/graphql.ts'),
         outputAs: 'class',
       },
-      context: ({ req }) => ({ req }), // 요청 객체를 컨텍스트에 전달하여 인증 가드에서 사용
+      path: '/graphql',
+      context: ({ req }) => ({ req }), // 요청마다 context에 req를 포함
       playground: true, // GraphQL Playground 활성화
+      debug: true,
+      introspection: true, // 인트로스펙션 활성화 (개발 환경에서만 사용)
     }),
     WinstonModule.forRoot(winstonOptions),
     ConfigModule.forRoot({
@@ -39,6 +43,7 @@ import { PrismaModule } from './prisma/prisma.module';
     BookSearchModule,
     BookModule,
     ShareBookModule,
+    NoteModule,
   ],
   controllers: [],
   providers: [
