@@ -1,8 +1,8 @@
 import { BadRequestException, ForbiddenException, UnauthorizedException } from '@nestjs/common';
-import { Args, Context, Mutation, Resolver } from '@nestjs/graphql';
-import { Note } from '@prisma/client';
+import { Args, Context, Mutation, Resolver, Query } from '@nestjs/graphql';
 
 import { CreateNoteInput } from './dto/create-note-dto';
+import { Note } from './dto/note.model';
 import { NoteService } from './note.service';
 
 @Resolver('Note')
@@ -33,6 +33,32 @@ export class NoteResolver {
         throw err;
       }
       throw new Error('노트를 작성하는 중 오류가 발생했습니다.');
+    }
+  }
+
+  /**
+   * 해당 책에 대한 모든 노트 조회
+   * @param bookId
+   * @param context
+   * @returns
+   */
+  @Query()
+  async getNotesByBook(
+    @Args('bookId', { type: () => String }) bookId: string,
+    @Context() context,
+  ): Promise<Note[]> {
+    try {
+      const userId = context.req.user.id;
+      if (!userId) {
+        throw new UnauthorizedException('사용자 인증이 필요합니다.');
+      }
+      const notes = await this.noteService.getNotesByBook(bookId, userId);
+      return notes;
+    } catch (err) {
+      if (err instanceof UnauthorizedException || err instanceof ForbiddenException) {
+        throw err;
+      }
+      throw new Error(`노트를 조회하는 중 오류가 발생했습니다: ${err.message}`);
     }
   }
 }

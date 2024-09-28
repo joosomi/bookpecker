@@ -1,4 +1,3 @@
-
 /*
  * -------------------------------------------------------
  * THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
@@ -43,6 +42,8 @@ export class Book {
 
 export abstract class IQuery {
     abstract getAllBooks(): Book[] | Promise<Book[]>;
+
+    abstract getNotesByBook(bookId: string): Note[] | Promise<Note[]>;
 }
 
 export abstract class IMutation {

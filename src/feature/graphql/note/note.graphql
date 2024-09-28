@@ -29,3 +29,7 @@ input CreateNoteInput {
 type Mutation {
   createNote(input: CreateNoteInput!): Note!
 }
+
+type Query {
+  getNotesByBook(bookId: ID!): [Note!]!
+}
