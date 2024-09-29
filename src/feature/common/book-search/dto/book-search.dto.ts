@@ -22,14 +22,13 @@ export class BookSearchDto {
   @Type(() => Number)
   @Min(1)
   @Max(100)
-  display?: number; //한 번에 표시할 검색 결과 개수(기본값: 10, 최댓값: 100)
+  display?: number = 10; //한 번에 표시할 검색 결과 개수(기본값: 10, 최댓값: 100)
 
   @ApiPropertyOptional({ description: '검색 시작 위치 (기본값: 1, 최댓값: 1000)', default: 1 })
   @IsInt()
   @Type(() => Number)
   @Min(1)
-  @Max(1000)
-  start?: number; //검색 시작 위치(기본값: 1, 최댓값: 1000)
+  start?: number = 1; //검색 시작 위치(기본값: 1, 최댓값: 1000)
 
   @ApiPropertyOptional({ description: '정렬 옵션', enum: SortOption })
   @IsOptional()

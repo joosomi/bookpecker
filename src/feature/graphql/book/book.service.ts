@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Book } from '@prisma/client';
 
+import { Book } from '../../../graphql';
 import { PrismaService } from '../../../prisma/prisma.service';
 
 import { SaveBookInput } from './dto/save-book.input';
@@ -22,12 +22,16 @@ export class BookService {
   async saveBook(input: SaveBookInput, userId: string): Promise<Book> {
     // ISBN을 기준으로 책이 이미 저장되어 있는지 확인
     let book = await this.prisma.book.findUnique({
-      where: { isbn: input.isbn },
+      where: { isbn: input.isbn, deletedAt: null },
     });
 
     if (!book) {
       // pubDate를 Date 타입으로 변환
-      const pubDate = this.parseDateString(input.pubDate);
+      const pubDate = input.pubDate
+        ? new Date(
+            `${input.pubDate.slice(0, 4)}-${input.pubDate.slice(4, 6)}-${input.pubDate.slice(6, 8)}T00:00:00Z`,
+          )
+        : null;
 
       book = await this.prisma.book.create({
         data: {
@@ -70,23 +74,6 @@ export class BookService {
   }
 
   /**
-   * 문자열로 된 날짜를 Date 객체로 변환하는 메서드
-   *
-   * @param dateString - YYYYMMDD 형식의 문자열 날짜
-   * @returns 변환된 Date 객체 또는 유효하지 않은 경우 undefined
-   */
-  private parseDateString(dateString: string): Date | undefined {
-    if (!dateString) return undefined;
-
-    const year = parseInt(dateString.slice(0, 4), 10);
-    const month = parseInt(dateString.slice(4, 6), 10) - 1; // 월은 0-based
-    const day = parseInt(dateString.slice(6, 8), 10);
-
-    const date = new Date(year, month, day);
-    return isNaN(date.getTime()) ? undefined : date;
-  }
-
-  /**
    * 책 좋아요 토글 기능
    * @throws NotFoundException - 해당 책이 사용자에게 저장되지 않았을 경우
    */
@@ -97,6 +84,7 @@ export class BookService {
           userId,
           bookId,
         },
+        deletedAt: null,
       },
     });
 
