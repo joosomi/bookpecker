@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
 import { PrismaService } from '../../../prisma/prisma.service';
 
@@ -89,5 +89,26 @@ export class NoteService {
     }));
 
     return graphqlNotes;
+  }
+
+  async getNoteById(id: string, userId: string): Promise<Note> {
+    // 해당 사용자의 노트인지, 노트 존재 여부 확인
+    const note = await this.prisma.note.findUnique({
+      where: { id },
+      include: {
+        book: true,
+        user: true,
+      },
+    });
+
+    if (!note) {
+      throw new NotFoundException('노트를 찾을 수 없습니다.');
+    }
+
+    if (note.userId !== userId) {
+      throw new ForbiddenException('해당 노트에 대한 접근 권한이 없습니다.');
+    }
+
+    return note;
   }
 }

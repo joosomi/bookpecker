@@ -61,4 +61,26 @@ export class NoteResolver {
       throw new Error(`노트를 조회하는 중 오류가 발생했습니다: ${err.message}`);
     }
   }
+
+  @Query()
+  async getNoteById(
+    @Args('noteId', { type: () => String }) noteId: string,
+    @Context() context,
+  ): Promise<Note> {
+    try {
+      const userId = context.req.user.id;
+      if (!userId) {
+        throw new UnauthorizedException('사용자 인증이 필요합니다.');
+      }
+      const note = await this.noteService.getNoteById(noteId, userId);
+
+      return note;
+    } catch (err) {
+      console.log(err);
+      if (err instanceof UnauthorizedException || err instanceof ForbiddenException) {
+        throw err;
+      }
+      throw new Error(`노트를 조회하는 중 오류가 발생했습니다: ${err.message}`);
+    }
+  }
 }
