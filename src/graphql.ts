@@ -39,7 +39,7 @@ export class Book {
     isbn: string;
     link?: Nullable<string>;
     publisher?: Nullable<string>;
-    pubDate?: Nullable<string>;
+    pubDate?: Nullable<Date>;
     description?: Nullable<string>;
     imageUrl?: Nullable<string>;
     isLiked?: Nullable<boolean>;

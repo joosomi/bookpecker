@@ -1,3 +1,5 @@
+scalar Date
+
 type User {
   id: ID!
 }
@@ -16,7 +18,7 @@ type Book {
   isbn: String!
   link: String
   publisher: String
-  pubDate: String
+  pubDate: Date
   description: String
   imageUrl: String
 }

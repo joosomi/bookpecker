@@ -1,8 +1,9 @@
 import { BadRequestException, ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { Args, Context, Mutation, Resolver, Query } from '@nestjs/graphql';
 
+import { Note } from '../../../graphql';
+
 import { CreateNoteInput } from './dto/create-note-dto';
-import { Note } from './dto/note.model';
 import { UpdateNoteInput } from './dto/update-note-dto';
 import { NoteService } from './note.service';
 
@@ -16,8 +17,8 @@ export class NoteResolver {
    * @param context GraphQL 요청 컨텍스트 (JWT 인증된 사용자 정보 포함)
    * @returns 생성된 노트
    */
-  @Mutation()
-  async createNote(@Args('input') input: CreateNoteInput, @Context() context): Promise<Note> {
+  @Mutation(() => Note)
+  async createNote(@Args('input') input: CreateNoteInput, @Context() context) {
     try {
       const userId = context.req.user.id;
 
@@ -43,11 +44,8 @@ export class NoteResolver {
    * @param context
    * @returns
    */
-  @Query()
-  async getNotesByBook(
-    @Args('bookId', { type: () => String }) bookId: string,
-    @Context() context,
-  ): Promise<Note[]> {
+  @Query(() => [Note])
+  async getNotesByBook(@Args('bookId', { type: () => String }) bookId: string, @Context() context) {
     try {
       const userId = context.req.user.id;
       if (!userId) {
@@ -63,11 +61,8 @@ export class NoteResolver {
     }
   }
 
-  @Query()
-  async getNoteById(
-    @Args('noteId', { type: () => String }) noteId: string,
-    @Context() context,
-  ): Promise<Note> {
+  @Query(() => Note)
+  async getNoteById(@Args('noteId', { type: () => String }) noteId: string, @Context() context) {
     try {
       const userId = context.req.user.id;
       if (!userId) {
@@ -84,12 +79,12 @@ export class NoteResolver {
     }
   }
 
-  @Mutation(() => Note, { name: 'updateNote' })
+  @Mutation(() => Note)
   async updateNote(
     @Args('noteId', { type: () => String }) noteId: string,
     @Args('input', { type: () => UpdateNoteInput }) input: UpdateNoteInput,
     @Context() context,
-  ): Promise<Note> {
+  ) {
     const userId = context.req.user.id;
     if (!userId) {
       throw new UnauthorizedException('사용자 인증이 필요합니다.');
@@ -97,11 +92,8 @@ export class NoteResolver {
     return this.noteService.updateNote(noteId, userId, input);
   }
 
-  @Mutation(() => Boolean, { name: 'deleteNote' })
-  async deleteNote(
-    @Args('noteId', { type: () => String }) noteId: string,
-    @Context() context,
-  ): Promise<boolean> {
+  @Mutation(() => Boolean)
+  async deleteNote(@Args('noteId', { type: () => String }) noteId: string, @Context() context) {
     const userId = context.req.user.id;
     if (!userId) {
       throw new UnauthorizedException('사용자 인증이 필요합니다.');

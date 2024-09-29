@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 
+import { Note } from '../../../graphql';
 import { PrismaService } from '../../../prisma/prisma.service';
 
 import { CreateNoteInput } from './dto/create-note-dto';
-import { Note } from './dto/note.model';
 import { UpdateNoteInput } from './dto/update-note-dto';
 
 @Injectable()
@@ -68,7 +68,7 @@ export class NoteService {
       throw new ForbiddenException('해당 책에 대한 접근 권한이 없습니다.');
     }
 
-    const prismaNotes = await this.prisma.note.findMany({
+    const notes = await this.prisma.note.findMany({
       where: {
         bookId,
         userId,
@@ -83,14 +83,7 @@ export class NoteService {
       },
     });
 
-    const graphqlNotes: Note[] = prismaNotes.map((note) => ({
-      id: note.id,
-      content: note.content,
-      book: note.book,
-      user: note.user,
-    }));
-
-    return graphqlNotes;
+    return notes;
   }
 
   async getNoteById(id: string, userId: string): Promise<Note> {

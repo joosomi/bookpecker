@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Book } from '@prisma/client';
 
+import { Book } from '../../../graphql';
 import { PrismaService } from '../../../prisma/prisma.service';
 
 import { SaveBookInput } from './dto/save-book.input';
@@ -27,7 +27,11 @@ export class BookService {
 
     if (!book) {
       // pubDate를 Date 타입으로 변환
-      const pubDate = this.parseDateString(input.pubDate);
+      const pubDate = input.pubDate
+        ? new Date(
+            `${input.pubDate.slice(0, 4)}-${input.pubDate.slice(4, 6)}-${input.pubDate.slice(6, 8)}T00:00:00Z`,
+          )
+        : null;
 
       book = await this.prisma.book.create({
         data: {
@@ -67,23 +71,6 @@ export class BookService {
     }
 
     return book;
-  }
-
-  /**
-   * 문자열로 된 날짜를 Date 객체로 변환하는 메서드
-   *
-   * @param dateString - YYYYMMDD 형식의 문자열 날짜
-   * @returns 변환된 Date 객체 또는 유효하지 않은 경우 undefined
-   */
-  private parseDateString(dateString: string): Date | undefined {
-    if (!dateString) return undefined;
-
-    const year = parseInt(dateString.slice(0, 4), 10);
-    const month = parseInt(dateString.slice(4, 6), 10) - 1; // 월은 0-based
-    const day = parseInt(dateString.slice(6, 8), 10);
-
-    const date = new Date(year, month, day);
-    return isNaN(date.getTime()) ? undefined : date;
   }
 
   /**
