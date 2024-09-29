@@ -22,7 +22,7 @@ export class BookService {
   async saveBook(input: SaveBookInput, userId: string): Promise<Book> {
     // ISBN을 기준으로 책이 이미 저장되어 있는지 확인
     let book = await this.prisma.book.findUnique({
-      where: { isbn: input.isbn },
+      where: { isbn: input.isbn, deletedAt: null },
     });
 
     if (!book) {
@@ -97,6 +97,7 @@ export class BookService {
           userId,
           bookId,
         },
+        deletedAt: null,
       },
     });
 

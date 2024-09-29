@@ -1,3 +1,4 @@
+
 /*
  * -------------------------------------------------------
  * THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
@@ -60,6 +61,8 @@ export abstract class IMutation {
     abstract createNote(input: CreateNoteInput): Note | Promise<Note>;
 
     abstract updateNote(noteId: string, input: UpdateNoteInput): Note | Promise<Note>;
+
+    abstract deleteNote(noteId: string): boolean | Promise<boolean>;
 }
 
 export class User {

@@ -60,6 +60,7 @@ export class NoteService {
           userId: userId,
           bookId: bookId,
         },
+        deletedAt: null,
       },
     });
 
@@ -95,14 +96,14 @@ export class NoteService {
   async getNoteById(id: string, userId: string): Promise<Note> {
     // 해당 사용자의 노트인지, 노트 존재 여부 확인
     const note = await this.prisma.note.findUnique({
-      where: { id },
+      where: { id, deletedAt: null },
       include: {
         book: true,
         user: true,
       },
     });
 
-    if (!note) {
+    if (!note || note.deletedAt) {
       throw new NotFoundException('노트를 찾을 수 없습니다.');
     }
 
@@ -122,7 +123,7 @@ export class NoteService {
       },
     });
 
-    if (!note) {
+    if (!note || note.deletedAt) {
       throw new NotFoundException('노트를 찾을 수 없습니다.');
     }
 
@@ -141,5 +142,32 @@ export class NoteService {
     });
 
     return updatedNote;
+  }
+
+  async deleteNote(noteId: string, userId: string): Promise<boolean> {
+    const note = await this.prisma.note.findUnique({
+      where: { id: noteId },
+      include: {
+        user: true,
+      },
+    });
+
+    if (!note || note.deletedAt) {
+      // 이미 소프트 삭제된 노트는 처리하지 않음
+      throw new NotFoundException('노트를 찾을 수 없습니다.');
+    }
+
+    if (note.userId !== userId) {
+      throw new ForbiddenException('해당 노트에 대한 접근 권한이 없습니다.');
+    }
+
+    await this.prisma.note.update({
+      where: { id: noteId },
+      data: {
+        deletedAt: new Date(), // soft delete
+      },
+    });
+
+    return true;
   }
 }

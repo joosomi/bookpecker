@@ -96,4 +96,16 @@ export class NoteResolver {
     }
     return this.noteService.updateNote(noteId, userId, input);
   }
+
+  @Mutation(() => Boolean, { name: 'deleteNote' })
+  async deleteNote(
+    @Args('noteId', { type: () => String }) noteId: string,
+    @Context() context,
+  ): Promise<boolean> {
+    const userId = context.req.user.id;
+    if (!userId) {
+      throw new UnauthorizedException('사용자 인증이 필요합니다.');
+    }
+    return this.noteService.deleteNote(noteId, userId);
+  }
 }
