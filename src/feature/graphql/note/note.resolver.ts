@@ -3,6 +3,7 @@ import { Args, Context, Mutation, Resolver, Query } from '@nestjs/graphql';
 
 import { CreateNoteInput } from './dto/create-note-dto';
 import { Note } from './dto/note.model';
+import { UpdateNoteInput } from './dto/update-note-dto';
 import { NoteService } from './note.service';
 
 @Resolver('Note')
@@ -76,11 +77,23 @@ export class NoteResolver {
 
       return note;
     } catch (err) {
-      console.log(err);
       if (err instanceof UnauthorizedException || err instanceof ForbiddenException) {
         throw err;
       }
       throw new Error(`노트를 조회하는 중 오류가 발생했습니다: ${err.message}`);
     }
+  }
+
+  @Mutation(() => Note, { name: 'updateNote' })
+  async updateNote(
+    @Args('noteId', { type: () => String }) noteId: string,
+    @Args('input', { type: () => UpdateNoteInput }) input: UpdateNoteInput,
+    @Context() context,
+  ): Promise<Note> {
+    const userId = context.req.user.id;
+    if (!userId) {
+      throw new UnauthorizedException('사용자 인증이 필요합니다.');
+    }
+    return this.noteService.updateNote(noteId, userId, input);
   }
 }

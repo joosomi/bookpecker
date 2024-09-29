@@ -1,4 +1,3 @@
-
 /*
  * -------------------------------------------------------
  * THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
@@ -28,6 +27,10 @@ export class CreateNoteInput {
     content: string;
 }
 
+export class UpdateNoteInput {
+    content?: Nullable<string>;
+}
+
 export class Book {
     id: string;
     title: string;
@@ -55,6 +58,8 @@ export abstract class IMutation {
     abstract toggleLike(input: ToggleLikeInput): boolean | Promise<boolean>;
 
     abstract createNote(input: CreateNoteInput): Note | Promise<Note>;
+
+    abstract updateNote(noteId: string, input: UpdateNoteInput): Note | Promise<Note>;
 }
 
 export class User {

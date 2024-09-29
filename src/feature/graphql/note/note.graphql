@@ -26,8 +26,13 @@ input CreateNoteInput {
   content: String!
 }
 
+input UpdateNoteInput {
+  content: String
+}
+
 type Mutation {
   createNote(input: CreateNoteInput!): Note!
+  updateNote(noteId: ID!, input: UpdateNoteInput!): Note!
 }
 
 type Query {

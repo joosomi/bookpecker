@@ -5,6 +5,7 @@ import { PrismaService } from '../../../prisma/prisma.service';
 
 import { CreateNoteInput } from './dto/create-note-dto';
 import { Note } from './dto/note.model';
+import { UpdateNoteInput } from './dto/update-note-dto';
 
 @Injectable()
 export class NoteService {
@@ -110,5 +111,35 @@ export class NoteService {
     }
 
     return note;
+  }
+
+  async updateNote(noteId: string, userId: string, input: UpdateNoteInput): Promise<Note> {
+    const note = await this.prisma.note.findUnique({
+      where: { id: noteId },
+      include: {
+        book: true,
+        user: true,
+      },
+    });
+
+    if (!note) {
+      throw new NotFoundException('노트를 찾을 수 없습니다.');
+    }
+
+    if (note.userId !== userId) {
+      throw new ForbiddenException('해당 노트에 대한 접근 권한이 없습니다.');
+    }
+    const updatedNote = await this.prisma.note.update({
+      where: { id: noteId },
+      data: {
+        content: input.content,
+      },
+      include: {
+        book: true,
+        user: true,
+      },
+    });
+
+    return updatedNote;
   }
 }
