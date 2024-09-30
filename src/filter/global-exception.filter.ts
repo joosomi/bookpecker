@@ -1,4 +1,14 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
+import {
+  ExceptionFilter,
+  Catch,
+  ArgumentsHost,
+  HttpException,
+  HttpStatus,
+  UnauthorizedException,
+  BadRequestException,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { GqlArgumentsHost, GqlExceptionFilter } from '@nestjs/graphql';
 import { Request, Response } from 'express';
 import { GraphQLError } from 'graphql';
@@ -98,9 +108,34 @@ export class GlobalExceptionsFilter implements ExceptionFilter, GqlExceptionFilt
         });
       }
 
+      // GraphQLError 던짐
       throw new GraphQLError(typeof message === 'string' ? message : JSON.stringify(message), {
-        extensions: errorResponse,
+        extensions: {
+          ...errorResponse,
+          code: this.getErrorCode(exception), // 각 예외에 맞는 코드를 설정
+        },
       });
     }
+  }
+
+  /**
+   * 에러 코드 반환 함수
+   * @param exception
+   * @returns string
+   */
+  getErrorCode(exception: unknown): string {
+    if (exception instanceof UnauthorizedException) {
+      return 'UNAUTHORIZED'; // 401
+    }
+    if (exception instanceof BadRequestException) {
+      return 'BAD_REQUEST'; // 400
+    }
+    if (exception instanceof NotFoundException) {
+      return 'NOT_FOUND'; // 404
+    }
+    if (exception instanceof ForbiddenException) {
+      return 'FORBIDDEN'; // 403
+    }
+    return 'INTERNAL_SERVER_ERROR'; // 기본적으로 500 에러 처리
   }
 }

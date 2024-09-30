@@ -1,4 +1,9 @@
-import { BadRequestException, ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Args, Context, Mutation, Resolver, Query } from '@nestjs/graphql';
 
 import { Note } from '../../../graphql';
@@ -31,7 +36,7 @@ export class NoteResolver {
       }
       return note;
     } catch (err) {
-      if (err instanceof ForbiddenException || err instanceof BadRequestException) {
+      if (err instanceof ForbiddenException) {
         throw err;
       }
       throw new Error('노트를 작성하는 중 오류가 발생했습니다.');
@@ -72,7 +77,12 @@ export class NoteResolver {
 
       return note;
     } catch (err) {
-      if (err instanceof UnauthorizedException || err instanceof ForbiddenException) {
+      console.log(err);
+      if (
+        err instanceof UnauthorizedException ||
+        err instanceof ForbiddenException ||
+        err instanceof NotFoundException
+      ) {
         throw err;
       }
       throw new Error(`노트를 조회하는 중 오류가 발생했습니다: ${err.message}`);
