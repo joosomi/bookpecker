@@ -1,0 +1,14 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    ports:
+      - '3001:3001'
+    env_file:
+      - /home/ec2-user/.env # 프로덕션 환경 변수 파일
+    networks:
+      - bookpecker-network
+
+networks:
+  bookpecker-network:
